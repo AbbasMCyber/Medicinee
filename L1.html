@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History of Medicine L1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            500: '#334e68',
+                            800: '#183153',
+                            900: '#102a43',
+                        },
+                        medblue: {
+                            500: '#6486A6',
+                            600: '#486581',
+                        },
+                        charcoal: '#263238',
+                        offwhite: '#F7F8FA',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        arabic: ['Cairo', 'Tajawal', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts for Arabic and English -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js CDN for 3D Visual Models -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7F8FA;
+            color: #263238;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        .arabic-text {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6486A6;
+            border-radius: 3px;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+        }
+        .accordion-content.active {
+            max-height: 3500px;
+            transition: max-height 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Fixed Navigation & Progress Bar -->
+    <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-gray-200 dark:border-slate-800 shadow-sm transition-colors">
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 dark:bg-slate-800 h-1.5">
+            <div id="readingProgress" class="bg-navy-800 dark:bg-medblue-500 h-1.5 w-0 transition-all duration-300"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+            <!-- Website Title / Identity -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-navy-800 text-white flex items-center justify-center font-bold text-lg shadow-md">
+                    <i class="fa-solid fa-book-medical"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-navy-800 dark:text-white tracking-tight leading-none">History of Medicine L1</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Al-Zahraa Medical College • University of Basrah</p>
+                </div>
+            </div>
+
+            <!-- Header Controls -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Search Input -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="Search medical terms..." 
+                        class="pl-9 pr-3 py-1.5 text-sm bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-medblue-500 w-36 sm:w-56 transition-all">
+                </div>
+
+                <!-- Review Mode Button -->
+                <button onclick="toggleReviewModal()" title="Review Mode" class="p-2 text-sm font-medium text-navy-800 dark:text-gray-200 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-layer-group text-medblue-500"></i>
+                    <span class="hidden sm:inline">Review Mode</span>
+                </button>
+
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" title="Toggle Theme" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                    <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 py-8">
+
+        <!-- Academic Lecture Header Card -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-gray-200/80 dark:border-slate-800 shadow-sm mb-8 transition-colors">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 dark:border-slate-800 pb-6 mb-6">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-medblue-500 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">
+                        Foundation of Medicine • Course 1
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-navy-800 dark:text-white">
+                        Introduction to Medicine: Concepts, Health, Disease & Medical History
+                    </h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                        <i class="fa-solid fa-user-doctor mr-1.5 text-medblue-500"></i> Lecturer: <strong class="text-gray-800 dark:text-gray-200">Dr. Zainab K. Khaleel</strong>
+                    </p>
+                </div>
+                <div class="flex flex-col items-end bg-gray-50 dark:bg-slate-800/60 p-4 rounded-xl border border-gray-100 dark:border-slate-800 min-w-[150px]">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Lecture Completion</span>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span id="completionPercentage" class="text-2xl font-bold text-navy-800 dark:text-medblue-500">0%</span>
+                    </div>
+                    <span id="completedCountText" class="text-xs text-gray-400 mt-0.5">0 of 13 paragraphs</span>
+                </div>
+            </div>
+
+            <!-- Quick Info / Instructions -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-gray-600 dark:text-gray-400">
+                <div class="flex items-center gap-2 bg-gray-50 dark:bg-slate-800/40 p-3 rounded-lg border border-gray-100 dark:border-slate-800/60">
+                    <i class="fa-solid fa-book-open text-navy-800 dark:text-medblue-500 text-base"></i>
+                    <span>Read English lecture content extracted from original PDF.</span>
+                </div>
+                <div class="flex items-center gap-2 bg-gray-50 dark:bg-slate-800/40 p-3 rounded-lg border border-gray-100 dark:border-slate-800/60">
+                    <i class="fa-solid fa-language text-navy-800 dark:text-medblue-500 text-base"></i>
+                    <span>Click <strong>Explore This Paragraph</strong> for Arabic & terminology.</span>
+                </div>
+                <div class="flex items-center gap-2 bg-gray-50 dark:bg-slate-800/40 p-3 rounded-lg border border-gray-100 dark:border-slate-800/60">
+                    <i class="fa-solid fa-circle-check text-navy-800 dark:text-medblue-500 text-base"></i>
+                    <span>Mark paragraphs complete to track study progress.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lecture Paragraphs Flow -->
+        <div id="lectureContainer" class="space-y-8">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 py-6 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-gray-500 dark:text-gray-400">
+            <p class="font-medium text-navy-800 dark:text-gray-300">History of Medicine L1 — Foundation of Medicine</p>
+            <p class="mt-1">Al-Zahraa Medical College • University of Basrah | Dr. Zainab K. Khaleel</p>
+            <p class="mt-2 text-gray-400 dark:text-gray-500">Designed for First-Year Medical Students • Interactive Academic Learning System</p>
+        </div>
+    </footer>
+
+    <!-- Review Mode Modal -->
+    <div id="reviewModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-800/50">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-navy-800 text-white rounded-lg">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-navy-800 dark:text-white text-lg">Lecture Review Mode</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Consolidated Medical Terminology & Key Self-Assessments</p>
+                    </div>
+                </div>
+                <button onclick="toggleReviewModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xl font-bold p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Nav Tabs -->
+            <div class="flex border-b border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6">
+                <button id="tabTermsBtn" onclick="switchReviewTab('terms')" class="py-3 px-4 font-semibold text-sm border-b-2 border-navy-800 dark:border-medblue-500 text-navy-800 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark"></i> Medical Glossary (<span id="totalTermsCount">0</span>)
+                </button>
+                <button id="tabQuizzesBtn" onclick="switchReviewTab('quizzes')" class="py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap"></i> Practice Questions (<span id="totalQuizCount">0</span>)
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto flex-grow space-y-6">
+                <!-- Terms View -->
+                <div id="reviewTermsView" class="space-y-4">
+                    <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-800">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-100 dark:bg-slate-800 text-navy-800 dark:text-gray-200 font-semibold border-b border-gray-200 dark:border-slate-700">
+                                <tr>
+                                    <th class="p-3">English Term</th>
+                                    <th class="p-3 text-right">المصطلح العربي</th>
+                                    <th class="p-3">Simple Explanation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviewTermsTableBody" class="divide-y divide-gray-100 dark:divide-slate-800 text-gray-700 dark:text-gray-300">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quizzes View -->
+                <div id="reviewQuizzesView" class="hidden space-y-6">
+                    <div id="reviewQuizzesContainer" class="space-y-6">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3 border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/40 text-right">
+                <button onclick="toggleReviewModal()" class="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white font-medium text-sm rounded-lg transition-colors">
+                    Close Review
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT DATA & APP LOGIC -->
+    <script>
+        // Lecture Database derived strictly from PDF
+        const lectureData = [
+            {
+                id: 1,
+                sectionTitle: "1. Learning Objectives",
+                paragraphNumber: "01",
+                text: "The main learning objectives of this lecture are to define the scope and purpose of medicine, establish clear medical definitions for health and disease, identify the primary determinants that influence health outcomes, and define the concept of disease prevention. Furthermore, students will learn to recognize the major contributions of various historical civilizations and medical pioneers to the evolution of medicine.",
+                arabicTranslation: "تتمثل الأهداف التعليمية الرئيسية لهذه المحاضرة في تحديد نطاق الطب وهدفه (Scope and purpose of medicine)، ووضع تعاريف طبية واضحة للصحة والمرض (Health and disease)، والتعرف على المحددات الأساسية التي تؤثر على المخرجات الصحية (Determinants of health)، وتعريف مفهوم الوقاية من الأمراض (Disease prevention). علاوة على ذلك، سيتعلم الطلاب التعرف على المساهمات الرئيسية لمختلف الحضارات التاريخية ورواد الطب في تطور العلوم الطبية.",
+                terminology: [
+                    { term: "Scope of Medicine", ar: "نطاق الطب", exp: "The breadth and range of areas covered by medical science." },
+                    { term: "Determinants", ar: "المحددات / العوامل المؤثرة", exp: "Factors that directly influence health status and disease risk." },
+                    { term: "Pioneers", ar: "الرواد الأوائل", exp: "Early historical figures who led advancements in medical knowledge." }
+                ],
+                visualType: "svg_objectives",
+                visualCaption: "مخطط الأهداف التعليمية الخمسة لمحاضرة مدخل إلى علم الطب وتاريخه.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "Which of the following is NOT listed as a learning objective for this lecture?",
+                            options: ["Define health and disease", "Recognize contributions of medical pioneers", "Perform complex surgical operations", "Identify determinants of health"],
+                            correct: 2,
+                            explanation: "الهدف من المحاضرة هو التعرف على المفاهيم الأساسية والوقاية والتاريخ الطبي، وليس إجراء العمليات الجراحية المعقدة."
+                        },
+                        {
+                            q: "Recognizing contributions of ancient civilizations helps medical students to:",
+                            options: ["Memorize pharmacy prices", "Understand the historical evolution of medicine", "Ignore modern diagnostics", "Replace modern vaccines with herbs"],
+                            correct: 1,
+                            explanation: "فهم تاريخ الحضارات يساعد الطالب على استيعاب كيفية تطور الطب عبر الزمن وتراكم المعرفة البشرية."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "State two primary concepts defined under the main learning objectives of Lecture 1.",
+                        modelAnswer: "Health definition, Disease definition, or Scope & purpose of medicine.",
+                        explanation: "تتضمن الأهداف الرئيسية تحديد نطاق الطب، وتعريف الصحة، وتعريف المرض، ومحددات الصحة والوقاية."
+                    }
+                }
+            },
+            {
+                id: 2,
+                sectionTitle: "2. What is Medicine?",
+                paragraphNumber: "02",
+                text: "Medicine is defined as the science dealing with the maintenance of health, prevention, diagnosis, and curing of disease. It integrates scientific knowledge and clinical skills to preserve human well-being and alleviate suffering across all stages of life.",
+                arabicTranslation: "يُعرَّف الطب (Medicine) بأنه العلم الذي يتعامل مع الحفاظ على الصحة (Maintenance of health)، والوقاية (Prevention)، والتشخيص (Diagnosis)، وعلاج الأمراض (Curing of disease). وهو يجمع بين المعرفة العلمية والمهارات السريرية للحفاظ على صحة الإنسان وتخفيف المعاناة في جميع مراحل الحياة.",
+                terminology: [
+                    { term: "Maintenance of Health", ar: "الحفاظ على الصحة", exp: "Actions aimed at keeping the body in optimal physical and mental state." },
+                    { term: "Diagnosis", ar: "التشخيص", exp: "The process of identifying a disease or condition from its signs and symptoms." },
+                    { term: "Curing", ar: "الشفاء / العلاج", exp: "Restoring health by eliminating the underlying cause of disease." }
+                ],
+                visualType: "canvas_medicine_pillars",
+                visualCaption: "الأركان الأربعة الأساسية لتعريف علم الطب: الحفاظ على الصحة، الوقاية، التشخيص، والشعر والعلاج.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "According to the lecture definition, Medicine is primarily a science dealing with:",
+                            options: ["Only surgical procedures", "Maintenance of health, prevention, diagnosis, and curing of disease", "Solely manufacturing pharmaceutical drugs", "Cosmetic enhancements"],
+                            correct: 1,
+                            explanation: "التعريف الدقيق للطب في المحاضرة يشمل 4 محاور: الحفاظ على الصحة، الوقاية، التشخيص، وعلاج الأمراض."
+                        },
+                        {
+                            q: "Identifying a specific illness based on clinical symptoms and diagnostic tests is known as:",
+                            options: ["Rehabilitation", "Prevention", "Diagnosis", "Palliative care"],
+                            correct: 2,
+                            explanation: "التشخيص (Diagnosis) هو تحديد طبيعة المرض من خلال الفحص والأعراض."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "List the four core components included in the definition of Medicine.",
+                        modelAnswer: "1. Maintenance of health, 2. Prevention, 3. Diagnosis, 4. Curing of disease.",
+                        explanation: "المكونات الأربعة هي: تعزيز الصحة، الوقاية من المرض، تشخيص الحالة، وعلاج Illness."
+                    }
+                }
+            },
+            {
+                id: 3,
+                sectionTitle: "3. The Scope and Purpose of Medicine",
+                paragraphNumber: "03",
+                text: "The scope of medicine is broad and includes five key pillars: 1. Disease prevention – stopping diseases before they occur (e.g., health education & vaccination programs). 2. Diagnosis – identifying diseases through examination, laboratory tests, and imaging. 3. Treatment – curing the disease using medications or surgery. 4. Rehabilitation – helping patients restore or improve abilities needed for daily life after injury or illness (e.g., physical therapy). 5. Palliative care – reducing suffering in chronic or terminal diseases.",
+                arabicTranslation: "إن نطاق الطب واسع جداً ويشمل خمسة ركائز أساسية: 1. الوقاية من الأمراض (Disease prevention) - إيقاف الأمراض قبل حدوثها (مثل التثقيف الصحي وبرامج التلقيح). 2. التشخيص (Diagnosis) - تحديد الأمراض من خلال الفحص السريري، والفحوصات المختبرية، والتصوير الطبي. 3. العلاج (Treatment) - شفاء المرض باستخدام الأدوية أو الجراحة. 4. التأهيل (Rehabilitation) - مساعدة المرضى على استعادة أو تحسين المهارات اللازمة للحياة اليومية بعد الإصابة أو المرض (مثل العلاج الطبيعي). 5. الرعاية الملطفة (Palliative care) - تخفيف المعاناة في الأمراض المزمنة أو المستعصية.",
+                terminology: [
+                    { term: "Rehabilitation", ar: "إعادة التأهيل", exp: "Restoring physical capabilities after severe illness or trauma." },
+                    { term: "Palliative Care", ar: "الرعاية الملطفة", exp: "Medical care focusing on symptom relief for terminal or severe chronic conditions." },
+                    { term: "Vaccination", ar: "التطعيم / اللقاح", exp: "Administering antigenic material to stimulate immunity." }
+                ],
+                visualType: "canvas_scope_pillars",
+                visualCaption: "أعمدة نطاق الطب الخمسة: الوقاية، التشخيص، العلاج، التأهيل، والرعاية الملطفة.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "Physical therapy provided to a stroke patient to regain walking ability is an example of:",
+                            options: ["Palliative care", "Diagnosis", "Rehabilitation", "Primary prevention"],
+                            correct: 2,
+                            explanation: "العلاج الطبيعي لاستعادة القدرات الحركية بعد المرض يعتبر إعادة تأهيل (Rehabilitation)."
+                        },
+                        {
+                            q: "Reducing suffering and controlling pain in a terminal cancer patient is classified as:",
+                            options: ["Primary prevention", "Palliative care", "Diagnostic imaging", "Surgical curation"],
+                            correct: 1,
+                            explanation: "تخفيف الآلام والمعاناة في الحالات المستعصية يسمى الرعاية الملطفة (Palliative care)."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "Provide two real-world examples of 'Disease Prevention' mentioned in the lecture.",
+                        modelAnswer: "Health education and vaccination programs.",
+                        explanation: "الأمثلة المذكورة في المحاضرة للوقاية هي التثقيف الصحي وبرامج التلقيح/التطعيم."
+                    }
+                }
+            },
+            {
+                id: 4,
+                sectionTitle: "4. Health: Definition",
+                paragraphNumber: "04",
+                text: "The World Health Organization (WHO) defines health as: 'A state of complete physical, mental, and social well-being, and not merely the absence of disease.' This holistic definition emphasizes that health is not simply a biological state free of infection, but a multi-dimensional balance encompassing psychological stability and social harmony.",
+                arabicTranslation: "تعرّف منظمة الصحة العالمية (WHO) الصحة بأنها: 'حالة من الرفاه البدني والنفسي والاجتماعي الكامل، وليس مجرد غياب المرض أو العجز.' ويؤكد هذا التعريف الشامل على أن الصحة ليست مجرد خلو الجسم من الجراثيم، بل هي توازن متعدد الأبعاد يشمل الاستقرار النفسي والتوافق الاجتماعي.",
+                terminology: [
+                    { term: "WHO", ar: "منظمة الصحة العالمية", exp: "World Health Organization - specialized UN agency for international public health." },
+                    { term: "Well-being", ar: "الرفاهية / العافية", exp: "The state of being comfortable, healthy, or happy." },
+                    { term: "Holistic Health", ar: "الصحة الشاملة", exp: "Health approach considering the whole person: body, mind, and social context." }
+                ],
+                visualType: "canvas_who_triangle",
+                visualCaption: "مثلث الصحة لمنظمة الصحة العالمية: الجسدي، النفسي، والاجتماعي.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "According to the WHO definition, a person who has no physical illness but suffers severe social isolation and mental distress is:",
+                            options: ["Completely healthy", "Not in a complete state of health", "Only physically ill", "Immune to disease"],
+                            correct: 1,
+                            explanation: "حسب تعريف WHO، الصحة تتطلب الرفاه البدني والنفسي والاجتماعي معاً؛ وبالتالي عدم وجود مرض عضوي وحده لا يعني الصحة الكاملة."
+                        },
+                        {
+                            q: "The WHO health definition includes which three key dimensions?",
+                            options: ["Physical, Financial, Emotional", "Physical, Mental, Social", "Genetic, Biological, Surgical", "Dietary, Environmental, Occupational"],
+                            correct: 1,
+                            explanation: "الأبعاد الثلاثة المعتمدة رسمياً هي: الجسدية (Physical)، النفسية (Mental)، والاجتماعية (Social)."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "Write the full WHO definition of Health as stated in the lecture text.",
+                        modelAnswer: "A state of complete physical, mental, and social well-being, and not merely the absence of disease.",
+                        explanation: "تعريف منظمة الصحة العالمية يشترط الرفاه الكامل جسدياً ونفسياً واجتماعياً."
+                    }
+                }
+            },
+            {
+                id: 5,
+                sectionTitle: "5. Disease: Definition",
+                paragraphNumber: "05",
+                text: "Disease is defined as any abnormal condition that impairs the normal function of the body and produces specific signs or symptoms. Signs are objective findings that can be measured by a healthcare provider (such as fever or high blood pressure). Symptoms are subjective feelings reported by the patient (such as pain, fatigue, or nausea).",
+                arabicTranslation: "يُعرَّف المرض (Disease) بأنه أي حالة غير طبيعية تخل بالوظيفة الطبيعية للجسم وتنتج علامات أو أعراضاً محددة. العلامات (Signs) هي نتائج موضوعية يمكن قياسها بواسطة الطبيب (مثل الحمى أو ارتفاع ضغط الدم). أما الأعراض (Symptoms) فهي مشاعر ذاتية يشعر بها المريض ويرويها بنفسه (مثل الألم، التعب، أو الغثيان).",
+                terminology: [
+                    { term: "Signs", ar: "العلامات الطبية (الظاهرة)", exp: "Objective, measurable medical findings observed by a doctor (e.g. fever, BP)." },
+                    { term: "Symptoms", ar: "الأعراض (الذاتية)", exp: "Subjective patient experiences that cannot be measured directly (e.g. headache, pain)." },
+                    { term: "Objective vs Subjective", ar: "موضوعي مقابل ذاتي", exp: "Objective can be quantified by tests; subjective is felt by the patient." }
+                ],
+                visualType: "canvas_signs_vs_symptoms",
+                visualCaption: "مقارنة تفاعلية بين العلامات الموضوعية (Signs) والأعراض الذاتية (Symptoms).",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "Which of the following is categorized as a medical SIGN?",
+                            options: ["Nausea", "Headache", "Blood pressure reading of 150/90 mmHg", "Feeling tired"],
+                            correct: 2,
+                            explanation: "قراءة ضغط الدم هي قيمة موضوعية يتم قياسها بالجهاز، وبالتالي تعتبر علامة (Sign)."
+                        },
+                        {
+                            q: "Patient reporting 'severe lower back pain' is describing a:",
+                            options: ["Sign", "Symptom", "Laboratory measurement", "Objective finding"],
+                            correct: 1,
+                            explanation: "الألم هو شعور ذاتي يعبر عنه المريض ولا يمكن قياسه بشكل مباشر بالمسطرة أو الجهاز، فهو عرض (Symptom)."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "Distinguish between a 'Sign' and a 'Symptom' with one example for each.",
+                        modelAnswer: "Sign: Objective/measurable finding (e.g., fever). Symptom: Subjective experience felt by patient (e.g., pain).",
+                        explanation: "العلامة قياسية وموضوعية مثل الحرارة، بينما العرض شعور ذاتي للمريض مثل الألم."
+                    }
+                }
+            },
+            {
+                id: 6,
+                sectionTitle: "6. Determinants of Health and Disease",
+                paragraphNumber: "06",
+                text: "Determinants of health are the factors that influence whether a person remains healthy or becomes sick. They are categorized into five major domains: 1. Biological Factors (Genetics, Age, Sex). 2. Lifestyle Factors (Diet, Exercise, Smoking). 3. Environmental Factors (Workplace hazards, Pollution). 4. Social and Economic Factors (Education level, Income). 5. Healthcare Services (Availability of hospitals, clinics, and vaccination services).",
+                arabicTranslation: "محددات الصحة والمرض (Determinants of health and disease) هي العوامل التي تؤثر على ما إذا كان الشخص سيظل صحياً أم سيصاب بالمرض. وتصنف إلى 5 مجالات رئيسية: 1. العوامل البيولوجية (الوراثة، العمر، الجنس). 2. عوامل نمط الحياة (النظام الغذائي، التمارين، التدخين). 3. العوامل البيئية (مخاطر بيئة العمل، التلوث). 4. العوامل الاجتماعية والاقتصادية (مستوى التعليم، الدخل). 5. الخدمات الصحية (توفر المستشفيات، العيادات، وخدمات التطعيم).",
+                terminology: [
+                    { term: "Determinants", ar: "المحددات الصحية", exp: "Range of personal, social, economic, and environmental factors determining health." },
+                    { term: "Workplace Hazards", ar: "مخاطر بيئة العمل", exp: "Environmental dangers existing in occupational settings." },
+                    { term: "Biological Factors", ar: "العوامل البيولوجية", exp: "Intrinsic physical characteristics like genes, age, and biological sex." }
+                ],
+                visualType: "canvas_determinants_wheel",
+                visualCaption: "عجلة محددات الصحة الخمسة: البيولوجية، نمط الحياة، البيئية، الاجتماعية، والخدمات الصحية.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "A person's genetic predisposition to diabetes is categorized under which determinant?",
+                            options: ["Environmental Factor", "Biological Factor", "Healthcare Service", "Lifestyle Factor"],
+                            correct: 1,
+                            explanation: "الوراثة والجينات تندرج تحت العوامل البيولوجية (Biological Factors)."
+                        },
+                        {
+                            q: "Air quality and exposure to industrial chemical pollutants belong to:",
+                            options: ["Social & Economic Factors", "Environmental Factors", "Biological Factors", "Personal Choice"],
+                            correct: 1,
+                            explanation: "تلوث الهواء والكيماويات هي مخاطر بيئية (Environmental Factors)."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "List all 5 categories of health determinants listed in the lecture.",
+                        modelAnswer: "1. Biological, 2. Lifestyle, 3. Environmental, 4. Social and Economic, 5. Healthcare Services.",
+                        explanation: "الفئات الخمس هي البيولوجية، نمط الحياة، البيئية، الاجتماعية/الاقتصادية، والخدمات الصحية."
+                    }
+                }
+            },
+            {
+                id: 7,
+                sectionTitle: "7. Prevention and Types of Prevention",
+                paragraphNumber: "07",
+                text: "Prevention means taking steps to avoid disease, reduce its impact, or stop its progression. It is classified into three levels: 1. Primary Prevention: Preventing disease before it occurs (Examples: Vaccination, healthy diet, handwashing, health education). 2. Secondary Prevention: Early diagnosis and prompt treatment (Examples: Screening tests such as blood pressure measurement and mammograms). 3. Tertiary Prevention: Reducing complications and rehabilitation of established disease (Examples: Proper ongoing medical treatment and therapy).",
+                arabicTranslation: "الوقاية (Prevention) تعني اتخاذ خطوات لتجنب المرض، أو تقليل تأثيره، أو إيقاف تطوره. وتصنف إلى ثلاثة مستويات: 1. الوقاية الأولية (Primary Prevention): منع المرض قبل حدوثه (أمثلة: التلقيح، النظام الغذائي الصحي، غسل اليدين، التثقيف الصحي). 2. الوقاية الثانوية (Secondary Prevention): التشخيص المبكر والعلاج الفوري (أمثلة: فحوصات المسح المبكر مثل قياس ضغط الدم وفحص الثدي الشعاعي). 3. الوقاية الثلاثية (Tertiary Prevention): الحد من المضاعفات وإعادة التأهيل بعد استقرار المرض (أمثلة: العلاج الطبي المناسب وتجنب الإعاقة).",
+                terminology: [
+                    { term: "Primary Prevention", ar: "الوقاية الأولية", exp: "Interventions applied before disease onset to prevent initial occurrence." },
+                    { term: "Secondary Prevention", ar: "الوقاية الثانوية", exp: "Early detection through screening to arrest disease early." },
+                    { term: "Tertiary Prevention", ar: "الوقاية الثلاثية", exp: "Managing established disease to prevent long-term damage or disability." }
+                ],
+                visualType: "canvas_prevention_pyramid",
+                visualCaption: "هرم المستويات الثلاثة للوقاية الطبية: الأولية، الثانوية، والثلاثية مع الأمثلة.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "Routine mammogram screening for early breast cancer detection is an example of:",
+                            options: ["Primary Prevention", "Secondary Prevention", "Tertiary Prevention", "Quaternary Care"],
+                            correct: 1,
+                            explanation: "فحوصات المسح والكشف المبكر (Screening) تعتبر وقاية ثانوية (Secondary Prevention)."
+                        },
+                        {
+                            q: "Administering a COVID-19 vaccine to a healthy individual is classified as:",
+                            options: ["Primary Prevention", "Secondary Prevention", "Tertiary Prevention", "Palliative Care"],
+                            correct: 0,
+                            explanation: "إعطاء اللقاح لأشخاص أصحاء لمنع الإصابة بالمرض أصلاً هو وقاية أولية (Primary Prevention)."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "Define Tertiary Prevention and give one example.",
+                        modelAnswer: "Tertiary Prevention aims to reduce complications of established disease. Example: Proper clinical treatment or rehabilitation.",
+                        explanation: "الوقاية الثلاثية تهدف إلى تقليل مضاعفات المرض القائم وتأهيل المريض."
+                    }
+                }
+            },
+            {
+                id: 8,
+                sectionTitle: "8. Contributions of Civilizations: Prehistoric Medicine",
+                paragraphNumber: "08",
+                text: "The history of medicine begins in prehistoric times. Based on cave drawings and skeletal remains, scientists believe prehistoric peoples utilized trepanning (drilling holes into the human skull) to attempt to cure psychological disorders, severe headaches, and cranial trauma. Some prehistoric societies relied on medicine men, known as witch doctors or shamans, who combined spiritual rituals with primitive remedies.",
+                arabicTranslation: "يبدأ تاريخ الطب من عصور ما قبل التاريخ (Prehistoric time). واستناداً إلى رسومات الكهوف والبقايا العظمية، يعتقد العلماء أن شعوب ما قبل التاريخ استخدموا عملية ثقب الجمجمة (Trepanning) لعلاج الاضطرابات النفسية، الصداع الحاد، وإصابات الرأس. كما اعتمدت بعض مجتمعات ما قبل التاريخ على رجال الطب، المعرفين بالطباعين السحرة أو الشامان (Shamans)، والذين جمعوا بين الطقوس الروحية والعلاجات البدائية.",
+                terminology: [
+                    { term: "Prehistoric", ar: "عصور ما قبل التاريخ", exp: "The period of human history before written records existed." },
+                    { term: "Trepanning", ar: "ثقب الجمجمة (النقب)", exp: "Surgical procedure of drilling or scraping a hole into the skull." },
+                    { term: "Shaman / Witch Doctor", ar: "الشامان / المعالج الساحر", exp: "Primitive healer believed to access spiritual worlds to cure illness." }
+                ],
+                visualType: "threejs_skull_trepanning",
+                visualCaption: "نموذج ثلاثي الأبعاد (3D) يوضح ثقب الجمجمة البدائي (Trepanning) في عصور ما قبل التاريخ.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "What ancient surgical technique involved making a hole in the skull?",
+                            options: ["Mummification", "Trepanning", "Acupuncture", "Cauterization"],
+                            correct: 1,
+                            explanation: "عملية ثقب الجمجمة البدائية تسمى Trepanning."
+                        },
+                        {
+                            q: "Primitive healers in prehistoric times who performed spiritual medical rituals were known as:",
+                            options: ["Pharmacists", "Shamans or Witch Doctors", "Certified Surgeons", "Midwives"],
+                            correct: 1,
+                            explanation: "كان يُطلق على معالجي ذلك العصر الشامان أو المعالجين السحرة (Shamans)."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "Why did prehistoric humans perform trepanning according to evidence?",
+                        modelAnswer: "To treat psychological disorders, severe headaches, and brain disorders.",
+                        explanation: "كانت تُجرى لعلاج الصداع والاضطرابات النفسية وتخفيف الضغط داخل الجمجمة."
+                    }
+                }
+            },
+            {
+                id: 9,
+                sectionTitle: "9. Ancient Egyptian Medicine (3000 BC)",
+                paragraphNumber: "09",
+                text: "Ancient Egyptian medicine (c. 3000 BC) represented a major advance, practiced by both magicians and medicine men. Egyptologists discovered medical documents written on papyrus detailing advanced techniques comparable to modern concepts: performing surgery, setting fractured bones, applying wound compression to stop bleeding, and establishing specialized obstetricians and gynecologists (midwives). Main achievements include writing text on Papyrus, recognizing the heartbeat and blood vessels, classifying injuries into 3 categories (treatable, contestable, and untreatable), and utilizing herbal remedies like Acacia, Garlic, and Aloe vera.",
+                arabicTranslation: "مثّل الطب المصري القديم (نحو 3000 قبل الميلاد) تقدماً كبيراً، ومارسه الكهنة والمعالجون. اكتشف علماء المصريات وثائق مكتوبة على البردي (Papyrus) تصف تقنيات طبية تشبه المستخدمة اليوم: كإجراء الجراحة، تجبير العظام المكسورة، والضغط على الجروح لإيقاف النزيف، وتخصيص قابليات في التوليد وأمراض النساء. وتشمل إنجازاتهم الرئيسية: كتابة النصوص الطبية، التعرف على نبض القلب والأوعية الدموية، تصنيف الإصابات إلى 3 أنواع (قابلة للعلاج، مشكوك فيها، وغير قابلة للعلاج)، واستخدام الأعشاب كالصنط، الثوم، والصبار.",
+                terminology: [
+                    { term: "Papyrus", ar: "ورق البردي الطبي", exp: "Ancient Egyptian paper made from papyrus plant used to write medical treatises." },
+                    { term: "Wound Compression", ar: "الضغط على الجراح", exp: "Applying mechanical pressure to stanch arterial or venous bleeding." },
+                    { term: "Classification of Injuries", ar: "تصنيف الإصابات", exp: "Categorizing trauma into treatable, contestable, or untreatable outcomes." }
+                ],
+                visualType: "canvas_egyptian_papyrus",
+                visualCaption: "مخطط لمساهمات الطب المصري القديم: البردي، تجبير العظام، وتصنيف الإصابات الثلاثي.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "Ancient Egyptian physicians classified traumatic injuries into how many clinical categories?",
+                            options: ["Two", "Three (Treatable, Contestable, Untreatable)", "Five", "Ten"],
+                            correct: 1,
+                            explanation: "صنف المصريون الإصابات إلى 3 أنواع: قابلة للعلاج، مشكوك فيها، وغير قابلة للعلاج."
+                        },
+                        {
+                            q: "Which of the following herbal remedies was documented in Egyptian papyrus texts?",
+                            options: ["Penicillin", "Garlic and Aloe Vera", "Aspirin synthetics", "Morphine pills"],
+                            correct: 1,
+                            explanation: "استخدم المصريون القدماء الأعشاب الطبيعية مثل الثوم والصبار والتمر الهندي/الصنط."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "Name two medical surgical techniques practiced by Ancient Egyptians around 3000 BC.",
+                        modelAnswer: "Setting of bones and compression on wounds to stop bleeding (or surgery).",
+                        explanation: "من تقنياتهم: تجبير العظام وضغط الجروح لإيقاف النزيف والجراحة."
+                    }
+                }
+            },
+            {
+                id: 10,
+                sectionTitle: "10. Mesopotamia Medicine (Ancient Iraq)",
+                paragraphNumber: "10",
+                text: "Mesopotamian civilization in Iraq established early structured medical systems. The first recorded drug classification system was discovered on a clay manuscript dating back to 2200 BC during the Akkadian Empire; it featured three organized columns listing drug names, diseases used for, and modes of administration. Later, the Code of Hammurabi (1695 BC) contained 17 explicit medical regulations governing professional practice, rewarding successful physicians, and codifying severe punishments for medical malpractice.",
+                arabicTranslation: "أقامت حضارة بلاد ما بين النهرين (Mesopotamia) في العراق نظماً طبية منظمة مبكراً. حيث عُثر على أول نظام مدون للأدوية على ألواح طينية تعود لعام 2200 قبل الميلاد في العصر الأكدي، وتضمن ثلاثة أعمدة تشمل: أسماء الأدوية، الأمراض المستخدمة لها، وطريقة الاستعمال. ولاحقاً، تضمنت شريعة حمورابي (1695 قبل الميلاد) 17 قانوناً طبياً تنظم ممارسة المهن الطبية، وتكافئ الأطباء الناجحين وتحدد عقوبات للأخطاء الطبية.",
+                terminology: [
+                    { term: "Clay Manuscript", ar: "رُقيم طيني مدون", exp: "Clay tablets inscribed in cuneiform used to document medical prescriptions." },
+                    { term: "Code of Hammurabi", ar: "شريعة حمورابي", exp: "Ancient Babylonian law code featuring 17 medical regulations for doctors." },
+                    { term: "Medical Malpractice", ar: "الأخطاء الطبية", exp: "Professional negligence or failure by a physician resulting in patient harm." }
+                ],
+                visualType: "canvas_mesopotamia_tablet",
+                visualCaption: "الرُقيم الطيني العراقي القديم (2200 ق.م) وأعمدته الثلاثة لوصف الأدوية وشريعة حمورابي.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "The earliest recorded pharmacopeia/drug list written on clay tablets (2200 BC) originated in:",
+                            options: ["Ancient Greece", "Mesopotamia (Iraq)", "Rome", "China"],
+                            correct: 1,
+                            explanation: "أول نظام موثق للوصفات الطبية عُثر عليه في العراق (بلاد ما بين النهرين) في العهد الأكدي."
+                        },
+                        {
+                            q: "How many medical rules regulating doctors' rewards and malpractice punishments were in Hammurabi's Code?",
+                            options: ["5 rules", "17 rules", "50 rules", "100 rules"],
+                            correct: 1,
+                            explanation: "تضمنت شريعة حمورابي 17 قانوناً طبياً صادماً حول تنظيم عمل الأطباء ومحاسبتهم."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "What were the three columns contained on the Akkadian clay manuscript of 2200 BC?",
+                        modelAnswer: "1. Drug names, 2. Diseases used for, 3. Mode of use.",
+                        explanation: "الأعمدة الثلاثة هي: اسم الدواء، المرض المستهدف، وطريقة الاستخدام."
+                    }
+                }
+            },
+            {
+                id: 11,
+                sectionTitle: "11. Greek and Roman Medicine (450 BC)",
+                paragraphNumber: "11",
+                text: "Around 450 BC, Greek medicine evolved by building upon Egyptian knowledge. Initially, Greeks held supernatural views of illness, praying to gods like Apollo. However, Hippocrates—regarded as the Father of Medicine—transformed medical practice. He introduced rigorous clinical observation, asserted that diseases arise from natural causes rather than divine magic, authored the landmark Hippocratic Oath, and formulated the Theory of Humors. He posited that health depends on a precise balance among four bodily fluids: blood, phlegm, black bile, and yellow bile; imbalance results in disease.",
+                arabicTranslation: "في حدود عام 450 قبل الميلاد، تطور الطب اليوناني بالاعتماد على المعارف المصرية. في البداية اعتقد الإغريق بالأسباب الخارقة للمرض والتجأوا للآلهة كالإله أبوللو. لكن سقراط و**أبقراط (Hippocrates)** - الذي يُعتبر أب الطب - أحدث ثورة طبية؛ حيث أدخل الملاحظة السريرية (Clinical observation)، وأكد أن للأمراض أسباباً طبيعية وليست سحرية، ووضع 'قَسَم أبقراط'، ونظرية الأخلاط الأربعة: (الدم، البلغم، الصفراء، والسوداء)، موضحاً أن المرض يحدث نتيجة اختلال التوازن بين هذه الأخلاط.",
+                terminology: [
+                    { term: "Hippocrates", ar: "أبقراط (أب الطب)", exp: "Greek physician who secularized medicine and established observational clinical diagnosis." },
+                    { term: "Hippocratic Oath", ar: "قسم أبقراط الطبي", exp: "Ethical code historically taken by physicians before practicing medicine." },
+                    { term: "Four Humors", ar: "الأخلاط الأربعة", exp: "Bodily fluids (Blood, Phlegm, Black Bile, Yellow Bile) believed to control health." }
+                ],
+                visualType: "threejs_humors_sphere",
+                visualCaption: "نموذج 3D تفاعلي يمثل نظرية الأخلاط الأربعة لأبقراط (الدم، البلغم، الصفراء، والسوداء).",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "Who is universally recognized as the 'Father of Medicine' for proposing natural causes of disease?",
+                            options: ["Galen", "Hippocrates", "Ibn Sina", "Aristotle"],
+                            correct: 1,
+                            explanation: "يُعتبر أبقراط (Hippocrates) أب الطب لأنه فصل الطب عن السحر وأرجعه لأسباب طبيعية."
+                        },
+                        {
+                            q: "According to Hippocratic Humoral Theory, disease occurs when:",
+                            options: ["Gods are angry", "The 4 humors are imbalanced", "Blood stops flowing", "Trepanning fails"],
+                            correct: 1,
+                            explanation: "حسب أبقراط، يحدث المرض عند عدم التوازن أو الاضطراب بين الأخلاط الأربعة."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "Name the four bodily humors described by Hippocrates.",
+                        modelAnswer: "Blood, Phlegm, Black bile, and Yellow bile.",
+                        explanation: "الأخلاط الأربعة هي: الدم (Blood)، البلغم (Phlegm)، الصفراء (Yellow bile)، والسوداء (Black bile)."
+                    }
+                }
+            },
+            {
+                id: 12,
+                sectionTitle: "12. Islamic Golden Age Medicine",
+                paragraphNumber: "12",
+                text: "Medical science flourished during the Islamic Golden Age, anchored by the Quranic precept that saving one life is equivalent to saving all of humanity. Muslim physicians made pioneering advancements in anatomy, ophthalmology, pharmacology, physiology, and surgery. Key contributors include: Ibn Sina (Avicenna), who authored 'The Canon of Medicine' (used for centuries in Europe); Al-Razi (Rhazes), who first differentiated smallpox from measles and pioneered evidence-based practice; Al-Kindi, who applied mathematics to pharmacology dosage; and Ibn Al-Nafis, who first discovered pulmonary and coronary circulations. Furthermore, formal medical licensing examinations were mandated in Baghdad starting in 931 AD, alongside the founding of advanced hospitals and medical schools.",
+                arabicTranslation: "زهر الطب في العصر الإسلامي، انطلاقاً من المبدأ القرآني: (وَمَنْ أَحْيَاهَا فَكَأَنَّمَا أَحْيَا النَّاسَ جَمِيعًا). وقدم الأطباء المسلمون مساهمات جليلة في التشريح، الكحالة (العيوية)، الصيدلة، الفسيولوجيا، والجراحة. ومن أبرزهم: **ابن سينا** كتاب 'القانون في الطب' الذي درس لقرون في أوروبا، **الرازي** الذي فرق بين الجدري والحصبة وأسس الممارسة القائمة على الدليل، **الكندي** الذي أدخل الرياضيات في الصيدلة، و**ابن النفيس** مكتشف الدورة الدموية الرئوية والتاجية. كما فُرض امتحان ترخيص ممارسة الطب في بغداد عام 931م وتأسست المستشفيات والجامعات.",
+                terminology: [
+                    { term: "Canon of Medicine", ar: "كتاب القانون في الطب", exp: "Masterpiece textbook by Ibn Sina that served as the standard medical text in Europe." },
+                    { term: "Pulmonary Circulation", ar: "الدورة الدموية الرئوية", exp: "Flow of blood from heart to lungs and back, first described by Ibn Al-Nafis." },
+                    { term: "Licensing Examination", ar: "امتحان ترخيص الممارسة", exp: "Mandatory qualification exam initiated in Baghdad (931 AD) for practicing physicians." }
+                ],
+                visualType: "canvas_islamic_scholars",
+                visualCaption: "خريطة مساهمات علماء العصر الإسلامي: ابن سينا، الرازي، ابن النفيس، والكندي وتأسيس أول نظام ترخيص طبي ببغداد.",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "Which physician first discovered and correctly described the pulmonary blood circulation?",
+                            options: ["Al-Razi", "Ibn Sina", "Ibn Al-Nafis", "Al-Kindi"],
+                            correct: 2,
+                            explanation: "ابن النفيس هو أول من اكتشف ووصف الدورة الدموية الرئوية والتاجية."
+                        },
+                        {
+                            q: "Mandatory official medical licensing examinations for doctors were instituted in Baghdad in which year?",
+                            options: ["450 BC", "931 AD", "1695 AD", "1901 AD"],
+                            correct: 1,
+                            explanation: "بدأت امتحانات الترخيص الطبي للمرة الأولى في بغداد عام 931 ميلادية."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "Identify the author of 'The Canon of Medicine' and the physician who distinguished smallpox from measles.",
+                        modelAnswer: "Ibn Sina (Canon of Medicine) and Al-Razi (Smallpox vs Measles).",
+                        explanation: "ابن سينا ألّف القانون في الطب، والرازي ميز بين الجدري والحصبة."
+                    }
+                }
+            },
+            {
+                id: 13,
+                sectionTitle: "13. Modern Medical Pioneers",
+                paragraphNumber: "13",
+                text: "The modern era of scientific medicine was forged by key breakthroughs in microbiology and pharmacology. Louis Pasteur established the Germ Theory of disease and developed the process of pasteurization to destroy harmful microbes. Robert Koch identified the specific pathogenic bacteria responsible for major lethal diseases including tuberculosis (TB), cholera, and anthrax. Alexander Fleming revolutionized therapeutics in 1928 by discovering Penicillin, the world's first true antibiotic, transforming the treatment of bacterial infections worldwide.",
+                arabicTranslation: "تأسس عصر الطب الحديث عبر اكتشافات حاسمة في علم الأحياء الدقيقة والصيدلة. حيث اكتشف **لويس باستور (Louis Pasteur)** النظرية الجرثومية للمرض واخترع عملية البسترة للقضاء على الميكروبات. وحدد **روبرت كوخ (Robert Koch)** البكتيريا المسببة لأمراض فتاكة مثل السل (TB)، الهواجر (الشيرا)، والجمرة الخبيثة. بينما أحدث **ألكسندر فللمنج (Alexander Fleming)** ثورة اكتشاف البنسلين عام 1928 كأول مضاد حيوي في العالم.",
+                terminology: [
+                    { term: "Germ Theory", ar: "النظرية الجرثومية للمرض", exp: "Scientific principle stating that micro-organisms cause infectious diseases." },
+                    { term: "Pasteurization", ar: "البسترة", exp: "Heat treatment process named after Pasteur to destroy pathogens in liquids." },
+                    { term: "Penicillin", ar: "البنسلين", exp: "First mass-produced antibiotic agent discovered by Sir Alexander Fleming." }
+                ],
+                visualType: "canvas_modern_pioneers",
+                visualCaption: "رواد الطب الحديث: لويس باستور (النظرية الجرثومية)، روبرت كوخ (البكتيريا)، وألكسندر فلمنج (البنسلين).",
+                assessment: {
+                    mcqs: [
+                        {
+                            q: "Alexander Fleming is world-renowned in medical history for discovering:",
+                            options: ["Insulin", "Penicillin", "Smallpox vaccine", "Blood groups"],
+                            correct: 1,
+                            explanation: "اكتشف ألكسندر فلمنج دواء البنسلين، أول مضاد حيوي في التاريخ."
+                        },
+                        {
+                            q: "Which scientist identified the specific bacteria causing Tuberculosis, Cholera, and Anthrax?",
+                            options: ["Louis Pasteur", "Robert Koch", "Hippocrates", "Ibn Sina"],
+                            correct: 1,
+                            explanation: "روبرت كوخ هو الذي حدد البكتيريا المسببة للسل والكوليرا والجمرة الخبيثة."
+                        }
+                    ],
+                    shortAnswer: {
+                        q: "What major medical contribution is attributed to Louis Pasteur?",
+                        modelAnswer: "Discovered germ theory of disease and developed pasteurization.",
+                        explanation: "اكتشاف النظرية الجرثومية وتطوير تقنية البسترة."
+                    }
+                }
+            }
+        ];
+
+        // State Tracking
+        let completedParagraphs = new Set();
+        let openAccordionId = null;
+        let activeThreeScenes = {};
+
+        // Initialization
+        window.onload = function() {
+            renderLectureContent();
+            updateProgressUI();
+            setupSearchListener();
+            populateReviewModalData();
+        };
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-moon text-lg';
+            } else {
+                html.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-lg text-amber-400';
+            }
+        }
+
+        // Render Paragraph Cards
+        function renderLectureContent() {
+            const container = document.getElementById('lectureContainer');
+            container.innerHTML = '';
+
+            lectureData.forEach(item => {
+                const card = document.createElement('div');
+                card.id = `paragraph-card-${item.id}`;
+                card.className = "bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-200 hover:border-medblue-500/50";
+
+                card.innerHTML = `
+                    <!-- Card Header / Metadata -->
+                    <div class="p-6 sm:p-7">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold px-3 py-1 bg-gray-100 dark:bg-slate-800 text-navy-800 dark:text-medblue-500 rounded-md">
+                                ${item.sectionTitle}
+                            </span>
+                            
+                            <!-- Mark Completed Checkbox -->
+                            <button onclick="toggleCompleted(${item.id})" id="checkBtn-${item.id}" 
+                                class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
+                                    completedParagraphs.has(item.id) 
+                                    ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 text-emerald-600 dark:text-emerald-400' 
+                                    : 'bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                }">
+                                <i class="${completedParagraphs.has(item.id) ? 'fa-solid fa-circle-check text-emerald-500' : 'fa-regular fa-circle'}"></i>
+                                <span>${completedParagraphs.has(item.id) ? 'Completed' : 'Mark as Read'}</span>
+                            </button>
+                        </div>
+
+                        <!-- English Paragraph Content -->
+                        <div class="text-base sm:text-lg text-charcoal dark:text-gray-200 leading-relaxed font-normal my-4">
+                            ${item.text}
+                        </div>
+
+                        <!-- Single Required Interactive Button -->
+                        <div class="mt-6 pt-4 border-t border-gray-100 dark:border-slate-800 flex justify-center">
+                            <button onclick="toggleAccordion(${item.id})" id="exploreBtn-${item.id}"
+                                class="w-full sm:w-auto px-6 py-2.5 bg-navy-800 hover:bg-navy-900 text-white dark:bg-medblue-500 dark:hover:bg-medblue-600 font-medium text-sm rounded-xl shadow-sm transition-all duration-200 flex items-center justify-center gap-2 group">
+                                <span>Explore This Paragraph</span>
+                                <i id="chevron-${item.id}" class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Expandable Learning Panel -->
+                    <div id="accordion-content-${item.id}" class="accordion-content bg-gray-50/70 dark:bg-slate-950/40 border-t border-gray-200 dark:border-slate-800">
+                        <div class="p-6 sm:p-8 space-y-8">
+                            
+                            <!-- SECTION 01: FULL ARABIC TRANSLATION -->
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-2 text-navy-800 dark:text-medblue-500 font-bold text-sm tracking-wide">
+                                    <span class="w-6 h-6 rounded-full bg-navy-800 dark:bg-medblue-500 text-white text-xs flex items-center justify-center font-semibold">01</span>
+                                    <span>Full Arabic Translation / الترجمة العربية الكاملة</span>
+                                </div>
+                                <div class="p-5 bg-white dark:bg-slate-900 rounded-xl border border-gray-200/80 dark:border-slate-800 shadow-sm arabic-text text-base sm:text-lg text-gray-800 dark:text-gray-200 leading-loose">
+                                    ${item.arabicTranslation}
+                                </div>
+                            </div>
+
+                            <!-- SECTION 02: MEDICAL TERMINOLOGY TABLE -->
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-2 text-navy-800 dark:text-medblue-500 font-bold text-sm tracking-wide">
+                                    <span class="w-6 h-6 rounded-full bg-navy-800 dark:bg-medblue-500 text-white text-xs flex items-center justify-center font-semibold">02</span>
+                                    <span>Medical Terminology / المصطلحات الطبية</span>
+                                </div>
+                                <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+                                    <table class="w-full text-left text-sm">
+                                        <thead class="bg-navy-800 text-white dark:bg-slate-800 dark:text-gray-200 font-semibold">
+                                            <tr>
+                                                <th class="p-3.5">English Term</th>
+                                                <th class="p-3.5 text-right">المعنى العربي</th>
+                                                <th class="p-3.5">Simple Explanation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
+                                            ${item.terminology.map(t => `
+                                                <tr class="hover:bg-gray-50/50 dark:hover:bg-slate-800/40">
+                                                    <td class="p-3.5 font-semibold text-navy-800 dark:text-medblue-500">${t.term}</td>
+                                                    <td class="p-3.5 text-right font-medium text-emerald-700 dark:text-emerald-400 arabic-text">${t.ar}</td>
+                                                    <td class="p-3.5 text-gray-600 dark:text-gray-300 text-xs sm:text-sm">${t.exp}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- SECTION 03: VISUAL LEARNING -->
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-2 text-navy-800 dark:text-medblue-500 font-bold text-sm tracking-wide">
+                                    <span class="w-6 h-6 rounded-full bg-navy-800 dark:bg-medblue-500 text-white text-xs flex items-center justify-center font-semibold">03</span>
+                                    <span>Visual Explanation / التوضيح البصري</span>
+                                </div>
+                                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm flex flex-col items-center">
+                                    <div id="visual-container-${item.id}" class="w-full h-64 sm:h-72 bg-gray-50 dark:bg-slate-800/50 rounded-lg flex items-center justify-center overflow-hidden relative">
+                                        <!-- Visual Graphic Canvas or ThreeJS Container -->
+                                    </div>
+                                    <p class="mt-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400 arabic-text text-center font-medium">
+                                        <i class="fa-solid fa-circle-info text-navy-800 dark:text-medblue-500 ml-1"></i> ${item.visualCaption}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- SECTION 04: INTERACTIVE ASSESSMENT -->
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-2 text-navy-800 dark:text-medblue-500 font-bold text-sm tracking-wide">
+                                    <span class="w-6 h-6 rounded-full bg-navy-800 dark:bg-medblue-500 text-white text-xs flex items-center justify-center font-semibold">04</span>
+                                    <span>Test Your Understanding / اختبر فهمك</span>
+                                </div>
+                                
+                                <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-6">
+                                    
+                                    <!-- Multiple Choice Questions -->
+                                    <div class="space-y-5">
+                                        <h4 class="text-xs uppercase tracking-wider font-bold text-gray-400 dark:text-gray-500">Part A: Multiple Choice Questions</h4>
+                                        ${item.assessment.mcqs.map((mcq, qIdx) => `
+                                            <div class="space-y-3 bg-gray-50/60 dark:bg-slate-800/40 p-4 rounded-xl border border-gray-100 dark:border-slate-800">
+                                                <p class="font-semibold text-sm text-gray-800 dark:text-gray-200">${qIdx + 1}. ${mcq.q}</p>
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                    ${mcq.options.map((opt, oIdx) => `
+                                                        <button onclick="selectOption(${item.id}, ${qIdx}, ${oIdx})" id="mcq-btn-${item.id}-${qIdx}-${oIdx}"
+                                                            class="mcq-opt-${item.id}-${qIdx} text-left p-3 text-xs sm:text-sm rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300 transition-colors flex items-center gap-2">
+                                                            <span class="w-5 h-5 rounded-full border border-gray-300 dark:border-slate-600 flex items-center justify-center text-[10px] font-bold text-gray-500">${String.fromCharCode(65+oIdx)}</span>
+                                                            <span>${opt}</span>
+                                                        </button>
+                                                    `).join('')}
+                                                </div>
+                                                <div id="mcq-feedback-${item.id}-${qIdx}" class="hidden p-3 rounded-lg text-xs arabic-text"></div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+
+                                    <!-- Short Answer Question -->
+                                    <div class="space-y-3 pt-4 border-t border-gray-100 dark:border-slate-800">
+                                        <h4 class="text-xs uppercase tracking-wider font-bold text-gray-400 dark:text-gray-500">Part B: Short Answer Question</h4>
+                                        <div class="bg-gray-50/60 dark:bg-slate-800/40 p-4 rounded-xl border border-gray-100 dark:border-slate-800 space-y-3">
+                                            <p class="font-semibold text-sm text-gray-800 dark:text-gray-200">${item.assessment.shortAnswer.q}</p>
+                                            <textarea id="sa-input-${item.id}" rows="2" placeholder="Type your answer here in English..." 
+                                                class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-navy-800 dark:focus:ring-medblue-500 outline-none transition-all"></textarea>
+                                            
+                                            <div class="flex justify-end">
+                                                <button onclick="checkShortAnswer(${item.id})" class="px-4 py-2 bg-medblue-500 hover:bg-medblue-600 text-white text-xs font-semibold rounded-lg transition-colors">
+                                                    Submit & Reveal Model Answer
+                                                </button>
+                                            </div>
+
+                                            <div id="sa-feedback-${item.id}" class="hidden p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 space-y-2">
+                                                <p class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Model Answer:</p>
+                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-medium">${item.assessment.shortAnswer.modelAnswer}</p>
+                                                <div class="pt-2 border-t border-emerald-200/50 dark:border-emerald-800/50 text-xs text-emerald-700 dark:text-emerald-400 arabic-text">
+                                                    ${item.assessment.shortAnswer.explanation}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Accordion Controls
+        function toggleAccordion(id) {
+            const content = document.getElementById(`accordion-content-${id}`);
+            const chevron = document.getElementById(`chevron-${id}`);
+            const btn = document.getElementById(`exploreBtn-${id}`);
+
+            // Close previously opened accordion if different
+            if (openAccordionId !== null && openAccordionId !== id) {
+                const prevContent = document.getElementById(`accordion-content-${openAccordionId}`);
+                const prevChevron = document.getElementById(`chevron-${openAccordionId}`);
+                if (prevContent) prevContent.classList.remove('active');
+                if (prevChevron) prevChevron.style.transform = 'rotate(0deg)';
+            }
+
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                chevron.style.transform = 'rotate(0deg)';
+                openAccordionId = null;
+            } else {
+                content.classList.add('active');
+                chevron.style.transform = 'rotate(180deg)';
+                openAccordionId = id;
+                
+                // Initialize Visual Renderer on first open
+                setTimeout(() => {
+                    renderVisualForParagraph(id);
+                }, 150);
+            }
+        }
+
+        // Progress Tracking
+        function toggleCompleted(id) {
+            if (completedParagraphs.has(id)) {
+                completedParagraphs.delete(id);
+            } else {
+                completedParagraphs.add(id);
+            }
+            renderLectureContent();
+            updateProgressUI();
+            
+            // Re-open if it was active
+            if (openAccordionId === id) {
+                const content = document.getElementById(`accordion-content-${id}`);
+                const chevron = document.getElementById(`chevron-${id}`);
+                if (content) content.classList.add('active');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function updateProgressUI() {
+            const total = lectureData.length;
+            const completed = completedParagraphs.size;
+            const percent = Math.round((completed / total) * 100);
+
+            document.getElementById('readingProgress').style.width = `${percent}%`;
+            document.getElementById('completionPercentage').innerText = `${percent}%`;
+            document.getElementById('completedCountText').innerText = `${completed} of ${total} paragraphs`;
+        }
+
+        // Search Filter
+        function setupSearchListener() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                lectureData.forEach(item => {
+                    const card = document.getElementById(`paragraph-card-${item.id}`);
+                    const matchesText = item.text.toLowerCase().includes(query);
+                    const matchesTerms = item.terminology.some(t => t.term.toLowerCase().includes(query) || t.ar.includes(query));
+
+                    if (query === '' || matchesText || matchesTerms) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Assessment Handling (MCQs & Short Answer)
+        function selectOption(paraId, qIdx, oIdx) {
+            const item = lectureData.find(l => l.id === paraId);
+            const mcq = item.assessment.mcqs[qIdx];
+            const feedbackBox = document.getElementById(`mcq-feedback-${paraId}-${qIdx}`);
+            const buttons = document.querySelectorAll(`.mcq-opt-${paraId}-${qIdx}`);
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === mcq.correct) {
+                    btn.className = "text-left p-3 text-xs sm:text-sm rounded-lg border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-200 flex items-center gap-2 font-semibold";
+                } else if (idx === oIdx && oIdx !== mcq.correct) {
+                    btn.className = "text-left p-3 text-xs sm:text-sm rounded-lg border border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-200 flex items-center gap-2";
+                }
+            });
+
+            feedbackBox.classList.remove('hidden');
+            if (oIdx === mcq.correct) {
+                feedbackBox.className = "p-3 rounded-lg text-xs arabic-text bg-emerald-100/70 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800";
+                feedbackBox.innerHTML = `<strong>إجابة صحيحة! ✓</strong><br>${mcq.explanation}`;
+            } else {
+                feedbackBox.className = "p-3 rounded-lg text-xs arabic-text bg-rose-100/70 dark:bg-rose-900/40 text-rose-900 dark:text-rose-200 border border-rose-200 dark:border-rose-800";
+                feedbackBox.innerHTML = `<strong>إجابة خاطئة ✗</strong><br>${mcq.explanation}`;
+            }
+        }
+
+        function checkShortAnswer(paraId) {
+            const feedback = document.getElementById(`sa-feedback-${paraId}`);
+            feedback.classList.remove('hidden');
+        }
+
+        // Review Mode Modal Functions
+        function toggleReviewModal() {
+            const modal = document.getElementById('reviewModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function switchReviewTab(tab) {
+            const termsBtn = document.getElementById('tabTermsBtn');
+            const quizzesBtn = document.getElementById('tabQuizzesBtn');
+            const termsView = document.getElementById('reviewTermsView');
+            const quizzesView = document.getElementById('reviewQuizzesView');
+
+            if (tab === 'terms') {
+                termsBtn.className = "py-3 px-4 font-semibold text-sm border-b-2 border-navy-800 dark:border-medblue-500 text-navy-800 dark:text-white flex items-center gap-2";
+                quizzesBtn.className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 flex items-center gap-2";
+                termsView.classList.remove('hidden');
+                quizzesView.classList.add('hidden');
+            } else {
+                quizzesBtn.className = "py-3 px-4 font-semibold text-sm border-b-2 border-navy-800 dark:border-medblue-500 text-navy-800 dark:text-white flex items-center gap-2";
+                termsBtn.className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 flex items-center gap-2";
+                quizzesView.classList.remove('hidden');
+                termsView.classList.add('hidden');
+            }
+        }
+
+        function populateReviewModalData() {
+            const termsBody = document.getElementById('reviewTermsTableBody');
+            const quizContainer = document.getElementById('reviewQuizzesContainer');
+            
+            let allTerms = [];
+            let totalQuizCount = 0;
+
+            termsBody.innerHTML = '';
+            quizContainer.innerHTML = '';
+
+            lectureData.forEach(item => {
+                // Populate Terms
+                item.terminology.forEach(t => {
+                    allTerms.push(t);
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="p-3 font-semibold text-navy-800 dark:text-medblue-500">${t.term}</td>
+                        <td class="p-3 text-right font-medium text-emerald-700 dark:text-emerald-400 arabic-text">${t.ar}</td>
+                        <td class="p-3 text-xs sm:text-sm text-gray-600 dark:text-gray-300">${t.exp}</td>
+                    `;
+                    termsBody.appendChild(row);
+                });
+
+                // Populate Quiz Summary
+                totalQuizCount += item.assessment.mcqs.length;
+                const quizBlock = document.createElement('div');
+                quizBlock.className = "bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl border border-gray-200 dark:border-slate-700 space-y-3";
+                quizBlock.innerHTML = `
+                    <h4 class="font-bold text-navy-800 dark:text-medblue-500 text-sm">${item.sectionTitle}</h4>
+                    <div class="space-y-2">
+                        ${item.assessment.mcqs.map(q => `
+                            <div class="text-xs text-gray-700 dark:text-gray-300">
+                                <p class="font-medium">• ${q.q}</p>
+                                <p class="text-emerald-600 dark:text-emerald-400 arabic-text pl-3 mt-0.5">الإجابة: ${q.options[q.correct]} (${q.explanation})</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                quizContainer.appendChild(quizBlock);
+            });
+
+            document.getElementById('totalTermsCount').innerText = allTerms.length;
+            document.getElementById('totalQuizCount').innerText = totalQuizCount;
+        }
+
+        // VISUAL EXPLANATION GENERATOR (Three.js & Canvas Visuals)
+        function renderVisualForParagraph(id) {
+            const item = lectureData.find(l => l.id === id);
+            const container = document.getElementById(`visual-container-${id}`);
+            if (!container || container.dataset.rendered === "true") return;
+
+            container.dataset.rendered = "true";
+            container.innerHTML = ''; // Clear container
+
+            switch (item.visualType) {
+                case 'threejs_skull_trepanning':
+                    create3DSkullModel(container);
+                    break;
+                case 'threejs_humors_sphere':
+                    create3DHumorsSphere(container);
+                    break;
+                case 'canvas_who_triangle':
+                    drawWHOTriangleCanvas(container);
+                    break;
+                case 'canvas_prevention_pyramid':
+                    drawPreventionPyramidCanvas(container);
+                    break;
+                case 'canvas_signs_vs_symptoms':
+                    drawSignsVsSymptomsCanvas(container);
+                    break;
+                case 'canvas_medicine_pillars':
+                    drawMedicinePillarsCanvas(container);
+                    break;
+                case 'canvas_scope_pillars':
+                    drawScopePillarsCanvas(container);
+                    break;
+                case 'canvas_determinants_wheel':
+                    drawDeterminantsWheelCanvas(container);
+                    break;
+                default:
+                    drawGenericInfographicCanvas(container, item);
+                    break;
+            }
+        }
+
+        // Three.js Model 1: 3D Skull with Trepanning Hole
+        function create3DSkullModel(container) {
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f172a);
+
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 0, 5);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // Skull base sphere
+            const skullGeo = new THREE.SphereGeometry(1.2, 32, 32);
+            skullGeo.scale(1, 1.2, 1);
+            const skullMat = new THREE.MeshPhongMaterial({ color: 0xd9e2ec, wireframe: false });
+            const skull = new THREE.Mesh(skullGeo, skullMat);
+            scene.add(skull);
+
+            // Trepanning Hole indicator
+            const holeGeo = new THREE.CylinderGeometry(0.25, 0.25, 0.2, 16);
+            const holeMat = new THREE.MeshBasicMaterial({ color: 0xe11d48 });
+            const hole = new THREE.Mesh(holeGeo, holeMat);
+            hole.position.set(0.5, 0.6, 0.9);
+            hole.rotation.x = Math.PI / 3;
+            skull.add(hole);
+
+            // Lighting
+            const light1 = new THREE.DirectionalLight(0xffffff, 1);
+            light1.position.set(5, 5, 5).normalize();
+            scene.add(light1);
+            const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+            scene.add(ambientLight);
+
+            // Mouse rotation controls
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+
+            renderer.domElement.addEventListener('mousedown', () => isDragging = true);
+            renderer.domElement.addEventListener('mouseup', () => isDragging = false);
+            renderer.domElement.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const deltaX = e.clientX - previousMousePosition.x;
+                    const deltaY = e.clientY - previousMousePosition.y;
+                    skull.rotation.y += deltaX * 0.01;
+                    skull.rotation.x += deltaY * 0.01;
+                }
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                if (!isDragging) skull.rotation.y += 0.005;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        // Three.js Model 2: 3D Four Humors Balance Wheel
+        function create3DHumorsSphere(container) {
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f172a);
+
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 0, 5.5);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            const group = new THREE.Group();
+
+            // 4 Spheres representing Blood (Red), Phlegm (White), Yellow Bile (Yellow), Black Bile (Dark)
+            const colors = [0xd97706, 0xd97706, 0xd97706, 0xd97706];
+            const positions = [
+                { x: -1, y: 1, z: 0, col: 0xd97706, name: "Yellow Bile" }, // Yellow Bile
+                { x: 1, y: 1, z: 0, col: 0xd97706, name: "Blood" },        // Blood
+                { x: -1, y: -1, z: 0, col: 0xd97706, name: "Black Bile" }, // Black Bile
+                { x: 1, y: -1, z: 0, col: 0xd97706, name: "Phlegm" }       // Phlegm
+            ];
+
+            const humorColors = [0xd97706, 0xdc2626, 0x1e293b, 0x38bdf8];
+
+            positions.forEach((pos, idx) => {
+                const geo = new THREE.SphereGeometry(0.55, 32, 32);
+                const mat = new THREE.MeshPhongMaterial({ color: humorColors[idx], shininess: 80 });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(pos.x, pos.y, pos.z);
+                group.add(mesh);
+            });
+
+            // Central Balance Core
+            const coreGeo = new THREE.OctahedronGeometry(0.4);
+            const coreMat = new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true });
+            const core = new THREE.Mesh(coreGeo, coreMat);
+            group.add(core);
+
+            scene.add(group);
+
+            const light = new THREE.PointLight(0xffffff, 1.5, 100);
+            light.position.set(2, 2, 5);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040, 1.2));
+
+            function animate() {
+                requestAnimationFrame(animate);
+                group.rotation.y += 0.008;
+                group.rotation.x += 0.004;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        // Canvas Diagrams
+        function drawWHOTriangleCanvas(container) {
+            const canvas = document.createElement('canvas');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+            
+            // Draw Triangle
+            ctx.beginPath();
+            ctx.moveTo(w / 2, 30);
+            ctx.lineTo(w / 2 - 120, h - 40);
+            ctx.lineTo(w / 2 + 120, h - 40);
+            ctx.closePath();
+
+            ctx.fillStyle = 'rgba(100, 134, 166, 0.15)';
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#183153';
+            ctx.stroke();
+
+            // Labels
+            ctx.font = 'bold 13px Inter, sans-serif';
+            ctx.fillStyle = '#183153';
+            ctx.textAlign = 'center';
+
+            ctx.fillText('Physical Well-being (بدني)', w / 2, 20);
+            ctx.fillText('Mental Well-being (نفسي)', w / 2 - 110, h - 15);
+            ctx.fillText('Social Well-being (اجتماعي)', w / 2 + 110, h - 15);
+
+            ctx.font = 'bold 14px Cairo, sans-serif';
+            ctx.fillStyle = '#059669';
+            ctx.fillText('WHO Complete Health / الصحة الكاملة', w / 2, h / 2 + 10);
+        }
+
+        function drawPreventionPyramidCanvas(container) {
+            const canvas = document.createElement('canvas');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            const layers = [
+                { title: 'Primary Prevention (وقاية أولية)', desc: 'Vaccinations, Healthy Diet, Handwashing', bg: '#10b981' },
+                { title: 'Secondary Prevention (وقاية ثانوية)', desc: 'Screening Tests (BP, Mammograms)', bg: '#3b82f6' },
+                { title: 'Tertiary Prevention (وقاية ثلاثية)', desc: 'Rehabilitation & Clinical Therapy', bg: '#6366f1' }
+            ];
+
+            const layerHeight = (h - 40) / 3;
+            layers.forEach((l, idx) => {
+                ctx.fillStyle = l.bg;
+                ctx.fillRect(40, 20 + idx * layerHeight, w - 80, layerHeight - 8);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 13px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(l.title, w / 2, 42 + idx * layerHeight);
+                ctx.font = '11px Inter, sans-serif';
+                ctx.fillText(l.desc, w / 2, 58 + idx * layerHeight);
+            });
+        }
+
+        function drawSignsVsSymptomsCanvas(container) {
+            const canvas = document.createElement('canvas');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // Box 1: Signs
+            ctx.fillStyle = '#f0f9ff';
+            ctx.fillRect(20, 20, w / 2 - 30, h - 40);
+            ctx.strokeStyle = '#0284c7';
+            ctx.strokeRect(20, 20, w / 2 - 30, h - 40);
+
+            ctx.fillStyle = '#0369a1';
+            ctx.font = 'bold 15px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('SIGNS (علامات)', w / 4, 45);
+            ctx.font = '12px Inter, sans-serif';
+            ctx.fillStyle = '#334155';
+            ctx.fillText('• Objective & Measurable', w / 4, 75);
+            ctx.fillText('• Observed by Doctor', w / 4, 95);
+            ctx.fillText('e.g., Fever, High BP', w / 4, 125);
+
+            // Box 2: Symptoms
+            ctx.fillStyle = '#fdf2f8';
+            ctx.fillRect(w / 2 + 10, 20, w / 2 - 30, h - 40);
+            ctx.strokeStyle = '#db2777';
+            ctx.strokeRect(w / 2 + 10, 20, w / 2 - 30, h - 40);
+
+            ctx.fillStyle = '#be185d';
+            ctx.font = 'bold 15px Inter, sans-serif';
+            ctx.fillText('SYMPTOMS (أعراض)', 3 * w / 4, 45);
+            ctx.font = '12px Inter, sans-serif';
+            ctx.fillStyle = '#334155';
+            ctx.fillText('• Subjective Feelings', 3 * w / 4, 75);
+            ctx.fillText('• Reported by Patient', 3 * w / 4, 95);
+            ctx.fillText('e.g., Nausea, Pain, Fatigue', 3 * w / 4, 125);
+        }
+
+        function drawMedicinePillarsCanvas(container) {
+            const canvas = document.createElement('canvas');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            const pillars = ['Maintenance', 'Prevention', 'Diagnosis', 'Curing'];
+            const colors = ['#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
+            const colW = (w - 60) / 4;
+
+            pillars.forEach((p, idx) => {
+                ctx.fillStyle = colors[idx];
+                ctx.fillRect(30 + idx * colW, 40, colW - 10, h - 70);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(p, 25 + idx * colW + colW / 2, h / 2);
+            });
+        }
+
+        function drawScopePillarsCanvas(container) {
+            drawGenericInfographicCanvas(container, { sectionTitle: "Scope Pillars", text: "Prevention, Diagnosis, Treatment, Rehabilitation, Palliative Care" });
+        }
+
+        function drawDeterminantsWheelCanvas(container) {
+            const canvas = document.createElement('canvas');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            const items = ['Biological', 'Lifestyle', 'Environmental', 'Social/Econ', 'Healthcare'];
+            const colors = ['#ef4444', '#f59e0b', '#10b981', '#6366f1', '#ec4899'];
+
+            items.forEach((item, idx) => {
+                const angle = (idx * 2 * Math.PI) / items.length;
+                const x = w / 2 + Math.cos(angle) * (w / 3.8);
+                const y = h / 2 + Math.sin(angle) * (h / 3.8);
+
+                ctx.beginPath();
+                ctx.arc(x, y, 32, 0, 2 * Math.PI);
+                ctx.fillStyle = colors[idx];
+                ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 10px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(item, x, y + 3);
+            });
+        }
+
+        function drawGenericInfographicCanvas(container, item) {
+            container.innerHTML = `
+                <div class="p-6 text-center space-y-2">
+                    <i class="fa-solid fa-notes-medical text-4xl text-navy-800 dark:text-medblue-500"></i>
+                    <h5 class="font-bold text-navy-800 dark:text-gray-200 text-sm">${item.sectionTitle}</h5>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Interactive Visual Summary & Medical Diagram</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
